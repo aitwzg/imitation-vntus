@@ -1,0 +1,16 @@
+<svg id="レイヤー_1" data-name="レイヤー 1" xmlns="http://www.w3.org/2000/svg" width="24.83mm" height="24.03mm" viewBox="0 0 70.38 68.12">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        opacity: 0;
+      }
+
+      .cls-2 {
+        fill: #040000;
+      }
+    </style>
+  </defs>
+  <rect class="cls-1" width="70.38" height="68.12"/>
+  <path id="パス_2" data-name="パス 2" class="cls-2" d="M5.4,64.22V3.9H17.52L50.26,42.79V3.9H64.19V64.22H52.07L19.33,25.15V64.22Z"/>
+</svg>
