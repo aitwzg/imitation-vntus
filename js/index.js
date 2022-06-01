@@ -245,35 +245,35 @@ window.addEventListener('load', function () {
         // 手指拖动的时候，不需要动画效果所以要取消过渡效果
         swiperWrapper.style.transition = 'none';
         swiperWrapper.style.transform = 'translateX(' + translatex + 'px)';
-        
+
         e.preventDefault(); // 阻止滚动屏幕的行为
     });
     // 手指离开 根据移动距离去判断是回弹还是播放上一张下一张
     swiperWrapper.addEventListener('touchend', function (e) {
-            // (1) 如果移动距离大于90像素我们就播放上一张或者下一张
-            if (Math.abs(moveX) > 90) {
-                // 如果是右滑就是 播放上一张 moveX 是正值
-                if (moveX > 0) {
-                    index--;
-                    var translatex = -index * swiperWrapperWidth;
-                    swiperWrapper.style.transition = 'all .5s';
-                    swiperWrapper.style.transform = 'translateX(' + translatex + 'px)';
-                } else {
-                    // 如果是左滑就是 播放下一张 moveX 是负值
+        // (1) 如果移动距离大于90像素我们就播放上一张或者下一张
+        if (Math.abs(moveX) > 90) {
+            // 如果是右滑就是 播放上一张 moveX 是正值
+            if (moveX > 0) {
+                index--;
+                var translatex = -index * swiperWrapperWidth;
+                swiperWrapper.style.transition = 'all .5s';
+                swiperWrapper.style.transform = 'translateX(' + translatex + 'px)';
+            } else {
+                // 如果是左滑就是 播放下一张 moveX 是负值
                 // 如果是左滑就是 播放下一张 moveX 是负值
                 index++;
                 var translatex = -index * swiperWrapperWidth;
                 swiperWrapper.style.transition = 'all .5s';
                 swiperWrapper.style.transform = 'translateX(' + translatex + 'px)';
                 ;
-                }
-            } else {
-                // (2) 如果移动距离小于90像素我们就回弹
-                var translatex = -index * swiperWrapperWidth;
-                swiperWrapper.style.transition = 'all .1s';
-                swiperWrapper.style.transform = 'translateX(' + translatex + 'px)';
             }
-        
+        } else {
+            // (2) 如果移动距离小于90像素我们就回弹
+            var translatex = -index * swiperWrapperWidth;
+            swiperWrapper.style.transition = 'all .1s';
+            swiperWrapper.style.transform = 'translateX(' + translatex + 'px)';
+        }
+
         // 手指离开的时候就重新开启定时器
         clearInterval(timer);
         timer = setInterval(function () {
@@ -289,11 +289,11 @@ window.addEventListener('load', function () {
     swiperWrapper.addEventListener('mousedown', function (e) {
         // var flag2 = false;
 
-            startX2 = e.pageX;
-            // 手指触摸的时候就停止定时器
-            clearInterval(timer);
-            // 移动手指 touchmove： 计算手指的滑动距离， 并且移动盒子
-            document.addEventListener('mousemove', move);
+        startX2 = e.pageX;
+        // 手指触摸的时候就停止定时器
+        clearInterval(timer);
+        // 移动手指 touchmove： 计算手指的滑动距离， 并且移动盒子
+        document.addEventListener('mousemove', move);
 
     });
     function move(e) {
@@ -364,32 +364,18 @@ window.addEventListener('load', function () {
     //     sliderPagination.children[circle].className = 'swiper-pagination-bullet-active';
 
     // }
-
-
+    // 根据视口大小调整比例
+    let scale
 
     function mvResize() {
 
-        // console.log('重新计算大小');
+
         sectionMv.style.height = document.documentElement.clientHeight + 'px';
         jsMvVideo.style.height = document.documentElement.clientHeight + 'px';
         swiperWrapperWidth = swiperWrapper.offsetWidth;
         body.style.height = 20300 / 1921 * document.documentElement.clientWidth + 'px';
+        scale = document.documentElement.clientWidth / 1920;
 
-        // vntusVideos.style.left = 0;
-        // vntusVideos.style.top = 0;
-
-        // if (document.documentElement.clientHeight > 900) {
-
-        //     if (1600 / 900 * document.documentElement.clientHeight > document.documentElement.clientWidth) {
-        //         vntusVideos.style.left = -(1600 / 900 * document.documentElement.clientHeight - document.documentElement.clientWidth) / 2 + 'px';
-        //     }
-        // }
-
-        // if (document.documentElement.clientHeight > 1600) {
-        //     if (900 / 1600 * document.documentElement.clientWidth > document.documentElement.clientHeight) {
-        //         vntusVideos.style.top = -(900 / 1600 * document.documentElement.clientWidth - document.documentElement.clientHeight) / 2 + 'px';
-        //     }
-        // }
 
         // 视频居中自适应
         if (document.documentElement.clientHeight * 16 / 9 > document.documentElement.clientWidth) {
@@ -498,7 +484,6 @@ window.addEventListener('load', function () {
             if (timeout) clearTimeout(timeout);
             timeout = setTimeout(() => {
                 // func.apply(context)
-                console.log(222);
                 mainWrapper.style.transition = 'transform ease-out 1s ';
             }, wait);
         }
@@ -514,87 +499,226 @@ window.addEventListener('load', function () {
         // }, 100);
     }
 
+    // 视口检测函数
+    function useObserve(el, callback, intersect = 0) {
+        const observe = new IntersectionObserver(([{ isIntersecting }]) => {
+            if (isIntersecting) {
+                callback()
+                observe.unobserve(el);
+            }
+        }, { threshold: intersect })
+        observe.observe(el);
+    }
+    // moment
+    var momentMain01 = document.querySelector('#moment-main-01')
+    var momentMain01Scroll = 600 * scale;
+    var momentSub01Scroll = 800 * scale;
+    var momentSub02Scroll = 1500 * scale;
+    var momentSub03Scroll = 1700 * scale;
+    var txtMoment01Scroll = 1800 * scale;
+    var momentFlag = false;
+    var momentMain01Flag = false;
+    var momentSub1Flag = false
+    var momentSub02Flag = false
+    var txtMoment01Flag = false
 
+    var momentText = document.querySelector('#moment-text');
+
+
+
+    useObserve(momentText, () => {
+        momentFlag = true;
+        momentText.style.transform = 'translate3d(0,0,0)';
+    })
+
+    useObserve(momentMain01, () => {
+        momentMain01Flag = true;
+    })
+
+    useObserve(momentSub01, () => {
+        momentSub1Flag = true;
+    }, 0.2)
+    useObserve(momentSub02, () => {
+        momentSub02Flag = true;
+    }, 0.1)
+    useObserve(txtMoment01, () => {
+        txtMoment01Flag = true;
+    })
+
+    // really
+
+    var reallyMain01Scroll = 2700 * scale;
+    var reallySub01Scroll = 2900 * scale;
+    var reallySub02Scroll = 3400 * scale;
+    var reallySub03Scroll = 3500 * scale;
+    var reallySub04Scroll = 3800 * scale;
+    var txtReally01Scroll = 3900 * scale;
+    var reallyFlag = false
+    var reallyMain01Flag = false
+    var reallySub01Flag = false
+    var reallySub02Flag = false
+    var reallySub03Flag = false
+
+    var reallyText = document.querySelector('#really-text');
+
+
+    useObserve(reallyText, () => {
+        reallyFlag = true;
+        console.log('reallyText');
+        reallyText.style.transform = 'translate3d(0,0,0)'
+    })
+
+    useObserve(reallyMain01, () => {
+        reallyMain01Flag = true;
+    }, 0.1)
+
+    useObserve(reallySub01, () => {
+        reallySub01Flag = true;
+    }, 0.2)
+    useObserve(reallySub02, () => {
+        reallySub02Flag = true;
+    })
+    useObserve(reallySub03, () => {
+        reallySub03Flag = true;
+    })
+    useObserve(reallySub04, () => {
+        reallySub04Flag = true;
+    })
+    useObserve(txtReally01, () => {
+        txtReally01Flag = true;
+    }, 0.1)
+
+    // emotion
+
+    var emotionMain01Scroll = 4900 * scale;
+    var emotionSub01Scroll = 5000 * scale;
+    var emotionSub02Scroll = 5700 * scale;
+    var emotionSub03Scroll = 5900 * scale;
+    var txtEmotion01Scroll = 6000 * scale;
+
+    var emotionFlagScroll1 = 6200 * scale;
+    var emotionFlagScroll2 = 6700 * scale;
+    var emotionFlagScroll3 = 7000 * scale;
+    var emotionFlag1 = false;
+    var emotionFlag2 = false;
+    var emotionFlag3 = false;
+    var emotionText = document.querySelector('#emotion-text');
+
+    // catch
+
+    var catch01Scroll = 7200 * scale;
+    var catch02Scroll = 8600 * scale;
+
+    var catchFlagScroll1 = 8400 * scale;
+    var catchFlag1 = false;
+    var catchText = document.querySelector('#catch-text');
+
+    // unmix
+    var unmixMain01Scroll = 9000 * scale;
+    var unmixSub01Scroll = 9600 * scale;
+    var unmixSub02Scroll = 10000 * scale;
+    var unmixSub03Scroll = 10300 * scale;
+    var txtUnmix01Scroll = 10200 * scale;
+
+
+    var unmixFlagScroll1 = 10500 * scale;
+    var unmixFlagScroll2 = 11000 * scale;
+    var unmixFlagScroll3 = 11300 * scale;
+    var unmixFlag1 = false;
+    var unmixFlag2 = false;
+    var unmixFlag3 = false;
+    var unmixText = document.querySelector('#unmix-text');
+
+
+    // ennui
+
+    var ennuiMain01Scroll = 11300 * scale;
+    var ennuiSub01Scroll = 11500 * scale;
+    var ennuiSub02Scroll = 12100 * scale;
+    var ennuiSub03Scroll = 12300 * scale;
+    var txtEnnui01Scroll = 12400 * scale;
+
+    var ennuiFlagScroll1 = 12600 * scale;
+    var ennuiFlagScroll2 = 13100 * scale;
+    var ennuiFlagScroll3 = 13400 * scale;
+
+    var ennuiFlag1 = false;
+    var ennuiFlag2 = false;
+    var ennuiFlag3 = false;
+    var ennuiText = document.querySelector('#ennui-text');
+
+    // mystical
+
+    var mysticalMain01Scroll = 13500 * scale;
+    var mysticalSub01Scroll = 14100 * scale;
+    var mysticalSub02Scroll = 14300 * scale;
+    var mysticalSub03Scroll = 14900 * scale;
+    var txtMystical01Scroll = 14700 * scale;
+    var mysticalFlagScroll1 = 14800 * scale;
+    var mysticalFlagScroll2 = 15300 * scale;
+    var mysticalFlagScroll3 = 15500 * scale;
+    var mysticalFlag1 = false;
+    var mysticalFlag2 = false;
+    var mysticalFlag3 = false;
+
+    var mysticalText = document.querySelector('#mystical-text');
+    // 视差滚动函数
     function scrollEvent() {
-
-        // setTimeout(() => {
-        //     // func.apply(context)
-        //     console.log(111);
-        //     mainWrapper.style.transform = 'translate3d(0px,-' + window.pageYOffset + 'px,0px)';
-        //     // mainWrapper.style.transition = 'transform ease 1.5s';
-        // }, 180)
-        // mainWrapper.style.transition = '';
-        // console.log(111);
-        // mainWrapper.style.transform = 'translate3d(0px,-' + (window.pageYOffset - 100) + 'px,0px)';
         mainWrapper.style.transform = 'translate3d(0px,-' + window.pageYOffset + 'px,0px)';
 
-
-
-
-
-
-
         // 第一个图函数
-        var scale = document.documentElement.clientWidth / 1920;
-        var momentMain01Scroll = 600 * scale;
-        var momentSub01Scroll = 800 * scale;
-        var momentSub02Scroll = 1500 * scale;
-        var momentSub03Scroll = 1700 * scale;
-        var txtMoment01Scroll = 1800 * scale;
-        var momentFlagScroll1 = 1750 * scale;
-        var momentFlagScroll2 = 2600 * scale;
-        var momentFlag1 = false;
-        var momentFlag2 = false;
-        var momentText = document.querySelector('#moment-text');
-        console.log();
-        if (window.pageYOffset > momentFlagScroll1) {
-            momentFlag1 = true;
-            momentText.style.transform = 'translate3d(0,0,0)';
-        }
-        if (momentFlag1) {
-            if (window.pageYOffset > momentMain01Scroll) {
+
+
+
+        // console.log();
+        // if (window.pageYOffset > momentFlagScroll1) {
+
+        // }
+        if (momentFlag) {
+            if (momentMain01Flag) {
+                console.log('成功');
                 let pathLength = window.pageYOffset - momentMain01Scroll;
                 if (pathLength < 4100 * scale) {
                     momentMain01.style.transform = 'translate3d(0px,' + (52.4 * scale - pathLength / 26) + 'px,0px)'
                 }
             }
 
-            if (window.pageYOffset > momentSub01Scroll) {
+            if (momentSub1Flag) {
                 let pathLength = window.pageYOffset - momentSub01Scroll;
                 if (pathLength < 4100 * scale) {
+
                     momentSub01.style.transform = 'translate3d(0px,' + (82.5 * scale - pathLength / 17) + 'px,0px)'
                 }
             }
-        }
-        if (window.pageYOffset > momentFlagScroll2) {
-            momentFlag2 = true;
-            momentText.style.transform = 'translate3d(0,0,0)';
-        }
-        if (momentFlag2) {
 
 
-            // var momentSub02ScrollTo = window.pageYOffset-momentSub02Scroll;
-            if (window.pageYOffset > momentSub02Scroll) {
+            if (momentSub02Flag) {
                 let pathLength = window.pageYOffset - momentSub02Scroll;
                 if (pathLength < 4100 * scale) {
+
                     momentSub02.style.transform = 'translate3d(0px,' + (122 * scale - pathLength / 13) + 'px,0px)'
                 }
             }
 
-            if (window.pageYOffset > momentSub03Scroll) {
+
+            if (momentSub02Flag) {
                 let pathLength = window.pageYOffset - momentSub03Scroll;
                 if (pathLength < 4100 * scale) {
+
                     momentSub03.style.transform = 'translate3d(0px,' + (306 * scale - pathLength / 6) + 'px,0px)'
                 }
             }
 
-            if (window.pageYOffset > txtMoment01Scroll) {
-                let pathLength = window.pageYOffset - txtMoment01Scroll;
 
+            if (txtMoment01Flag) {
+                let pathLength = window.pageYOffset - txtMoment01Scroll;
                 if (pathLength < 4100 * scale) {
+
+
                     txtMoment01.style.transform = 'translate3d(0px,' + (38.3 - pathLength / 25.7) * scale + 'px,0px)'
                 }
             }
+
         }
 
 
@@ -605,68 +729,56 @@ window.addEventListener('load', function () {
 
 
         // 第二个图函数
-        var reallyMain01Scroll = 2700 * scale;
-        var reallySub01Scroll = 2900 * scale;
-        var reallySub02Scroll = 3400 * scale;
-        var reallySub03Scroll = 3500 * scale;
-        var reallySub04Scroll = 3800 * scale;
-        var txtReally01Scroll = 3900 * scale;
-        var reallyFlagScroll1 = 4000 * scale;
-        var reallyFlagScroll2 = 5000 * scale;
-        var reallyFlag1 = false;
-        var reallyFlag2 = false;
-        var reallyText = document.querySelector('#really-text');
-        if (window.pageYOffset > reallyFlagScroll1) {
-            reallyFlag1 = true;
-            reallyText.style.transform = 'translate3d(0,0,0)'
-        }
 
-        if (reallyFlag1) {
-            if (window.pageYOffset > reallyMain01Scroll) {
+
+
+
+        if (reallyFlag) {
+            if (reallyMain01Flag) {
                 let pathLength = window.pageYOffset - reallyMain01Scroll;
                 if (pathLength < 4100 * scale) {
+
                     reallyMain01.style.transform = 'translate3d(0px,' + (52 * scale - pathLength / 26) + 'px,0px)'
                 }
             }
 
-            if (window.pageYOffset > reallySub01Scroll) {
+            if (reallySub01Flag) {
                 let pathLength = window.pageYOffset - reallySub01Scroll;
                 if (pathLength < 4100 * scale) {
+
                     reallySub01.style.transform = 'translate3d(0px,' + (81.5 * scale - pathLength / 17) + 'px,0px)'
                 }
             }
 
-            if (window.pageYOffset > reallySub02Scroll) {
+            if (reallySub02Flag) {
                 let pathLength = window.pageYOffset - reallySub02Scroll;
                 if (pathLength < 4100 * scale) {
+
                     reallySub02.style.transform = 'translate3d(0px,' + (117.7 * scale - pathLength / 12.5) + 'px,0px)'
                 }
             }
 
 
-            if (window.pageYOffset > reallySub03Scroll) {
+            if (reallySub03Flag) {
                 let pathLength = window.pageYOffset - reallySub03Scroll;
                 if (pathLength < 4100 * scale) {
+
                     reallySub03.style.transform = 'translate3d(0px,' + (165 * scale - pathLength / 10.2) + 'px,0px)'
                 }
             }
-        }
 
-        if (window.pageYOffset > reallyFlagScroll2) {
-            reallyFlag2 = true;
-        }
-
-        if (reallyFlag2) {
-            if (window.pageYOffset > reallySub04Scroll) {
+            if (reallySub04Flag) {
                 let pathLength = window.pageYOffset - reallySub04Scroll;
                 if (pathLength < 4100 * scale) {
+
                     reallySub04.style.transform = 'translate3d(0px,' + (215 * scale - pathLength / 8.6) + 'px,0px)'
                 }
             }
 
-            if (window.pageYOffset > txtReally01Scroll) {
+            if (txtReally01) {
                 let pathLength = window.pageYOffset - txtReally01Scroll;
                 if (pathLength < 4100 * scale) {
+
                     txtReally01.style.transform = 'translate3d(0px,' + (38.32 * scale - pathLength / 25.3) + 'px,0px)'
                 }
             }
@@ -674,20 +786,10 @@ window.addEventListener('load', function () {
 
 
 
-        // 第三个图函数
-        var emotionMain01Scroll = 4900 * scale;
-        var emotionSub01Scroll = 5000 * scale;
-        var emotionSub02Scroll = 5700 * scale;
-        var emotionSub03Scroll = 5900 * scale;
-        var txtEmotion01Scroll = 6000 * scale;
 
-        var emotionFlagScroll1 = 6200 * scale;
-        var emotionFlagScroll2 = 6700 * scale;
-        var emotionFlagScroll3 = 7000 * scale;
-        var emotionFlag1 = false;
-        var emotionFlag2 = false;
-        var emotionFlag3 = false;
-        var emotionText = document.querySelector('#emotion-text');
+
+        // 第三个图函数
+
 
         if (window.pageYOffset > emotionFlagScroll1) {
             emotionFlag1 = true;
@@ -752,13 +854,6 @@ window.addEventListener('load', function () {
         // 第四个图函数
 
 
-        var catch01Scroll = 7200 * scale;
-        var catch02Scroll = 8600 * scale;
-
-        var catchFlagScroll1 = 8400 * scale;
-        var catchFlag1 = false;
-        var catchText = document.querySelector('#catch-text');
-
         if (window.pageYOffset > catchFlagScroll1) {
             catchFlag1 = true;
             catchText.style.transform = 'translate3d(0, 0, 0)';
@@ -784,20 +879,6 @@ window.addEventListener('load', function () {
 
         // 第五个图函数
 
-        var unmixMain01Scroll = 9000 * scale;
-        var unmixSub01Scroll = 9600 * scale;
-        var unmixSub02Scroll = 10000 * scale;
-        var unmixSub03Scroll = 10300 * scale;
-        var txtUnmix01Scroll = 10200 * scale;
-
-
-        var unmixFlagScroll1 = 10500 * scale;
-        var unmixFlagScroll2 = 11000 * scale;
-        var unmixFlagScroll3 = 11300 * scale;
-        var unmixFlag1 = false;
-        var unmixFlag2 = false;
-        var unmixFlag3 = false;
-        var unmixText = document.querySelector('#unmix-text');
 
         if (window.pageYOffset > unmixFlagScroll1) {
             unmixFlag1 = true;
@@ -858,20 +939,7 @@ window.addEventListener('load', function () {
 
         // 第六个图函数
 
-        var ennuiMain01Scroll = 11300 * scale;
-        var ennuiSub01Scroll = 11500 * scale;
-        var ennuiSub02Scroll = 12100 * scale;
-        var ennuiSub03Scroll = 12300 * scale;
-        var txtEnnui01Scroll = 12400 * scale;
 
-        var ennuiFlagScroll1 = 12600 * scale;
-        var ennuiFlagScroll2 = 13100 * scale;
-        var ennuiFlagScroll3 = 13400 * scale;
-
-        var ennuiFlag1 = false;
-        var ennuiFlag2 = false;
-        var ennuiFlag3 = false;
-        var ennuiText = document.querySelector('#ennui-text');
         if (window.pageYOffset > ennuiFlagScroll1) {
             ennuiFlag1 = true;
             ennuiText.style.transform = 'translate3d(0, 0, 0)';
@@ -926,19 +994,6 @@ window.addEventListener('load', function () {
 
         // 第七个图函数
 
-        var mysticalMain01Scroll = 13500 * scale;
-        var mysticalSub01Scroll = 14100 * scale;
-        var mysticalSub02Scroll = 14300 * scale;
-        var mysticalSub03Scroll = 14900 * scale;
-        var txtMystical01Scroll = 14700 * scale;
-        var mysticalFlagScroll1 = 14800 * scale;
-        var mysticalFlagScroll2 = 15300 * scale;
-        var mysticalFlagScroll3 = 15500 * scale;
-        var mysticalFlag1 = false;
-        var mysticalFlag2 = false;
-        var mysticalFlag3 = false;
-
-        var mysticalText = document.querySelector('#mystical-text');
 
 
         if (window.pageYOffset > mysticalFlagScroll1) {

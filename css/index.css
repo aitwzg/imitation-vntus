@@ -371,12 +371,14 @@ header ul a img {
 .section-catch .title-main .line .text {
     position: relative;
     z-index: 2;
+    overflow: hidden;
+
 }
 
 .section-catch .title-main .gradient {
     position: absolute;
     left: 2px;
-    top: 2px;
+    top: 12px;
     right: 2px;
     bottom:2px;
     overflow: hidden;
